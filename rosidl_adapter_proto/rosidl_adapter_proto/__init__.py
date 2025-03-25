@@ -83,7 +83,7 @@ def compute_proto_field_number(variable_name):
 
 def to_proto_import(namespaced_type):
     assert isinstance(namespaced_type, rosidl.NamespacedType)
-    return '/'.join(namespaced_type.namespaces + [namespaced_type.name]) + '.proto'
+    return '/'.join(namespaced_type.namespaces + [convert_camel_case_to_lower_case_underscore(namespaced_type.name)]) + '.proto'
 
 
 def collect_proto_imports(rosidl_message):
@@ -108,7 +108,12 @@ def generate_proto(generator_arguments_file):
     mapping = {
         'idl.proto.em': '%s.proto',
     }
-    generate_files(generator_arguments_file, mapping, keep_case=True)
+    generate_files(
+        generator_arguments_file,
+        mapping,
+        # Don't keep case - we want snake case
+        keep_case=False
+    )
     return 0
 
 
