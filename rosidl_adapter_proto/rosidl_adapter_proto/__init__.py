@@ -19,11 +19,12 @@
 import subprocess
 import zlib
 
-from rosidl_cmake import generate_files
+from rosidl_cmake import generate_files, convert_camel_case_to_lower_case_underscore
 import rosidl_parser.definition as rosidl
 
 # A postfix for the protobuf package name / the c++ namespace
 PROTO_PACKAGE_POSTFIX = 'pb'
+ROS_VERSION = 'jazzy'
 
 # The rpc-function name for service calls. As ros services can only offer a
 # single function, this function gets a static name in the protobuf service
