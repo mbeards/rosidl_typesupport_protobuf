@@ -56,7 +56,7 @@ str_max_len_type         = 0
 str_max_len_name         = 0
 str_max_len_field_number = 0
 
-for member in message.structure.members:
+for member_index, member in enumerate(message.structure.members):
 
     idl_type = member.type
 
@@ -98,7 +98,7 @@ for member in message.structure.members:
     member_name_for_field_number = member.name
     additional_counter = 0
 
-    field_number = compute_proto_field_number(member_name_for_field_number)
+    field_number = compute_proto_field_number(member_index)
 
     while field_number in used_field_numbers:
         sys.stderr.write("WARNING: Field " + member.name + " maps to a protobuf field number that is already in use. This will hurt the downward compatibility of this message..\n")

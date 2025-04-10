@@ -59,7 +59,28 @@ MSG_TYPE_TO_PROTO = {
 field_val = 0
 
 
-def compute_proto_field_number(variable_name):
+#def compute_proto_field_number(variable_name):
+#    # Field number rules (https://developers.google.com/protocol-buffers/docs/
+#    # proto#assigning_field_numbers)
+#    #
+#    # Smallest: 1
+#    # Largest:  536870911 (= 2^29 - 1)
+#    #
+#    # Reserved Range: 19000 to 19999 (=> 1000 values)
+#
+#    # Create a 32 bit hash from the variable name
+#    field_number = zlib.crc32(bytearray(variable_name, 'utf8'))
+#    # Reduce to the correct amount of values
+#    field_number = (field_number % (536870911 - 1000))
+#    # Account for the fact that we must not use 0
+#    field_number += 1
+#    # Account for the fact that we must not use 19000 to 19999
+#    if field_number >= 19000:
+#        field_number += 1000
+#
+#    return field_number
+
+def compute_proto_field_number(member_index):
     # Field number rules (https://developers.google.com/protocol-buffers/docs/
     # proto#assigning_field_numbers)
     #
@@ -68,18 +89,17 @@ def compute_proto_field_number(variable_name):
     #
     # Reserved Range: 19000 to 19999 (=> 1000 values)
 
-    # Create a 32 bit hash from the variable name
-    field_number = zlib.crc32(bytearray(variable_name, 'utf8'))
-    # Reduce to the correct amount of values
-    field_number = (field_number % (536870911 - 1000))
     # Account for the fact that we must not use 0
-    field_number += 1
+    field_number = member_index + 1
+
     # Account for the fact that we must not use 19000 to 19999
     if field_number >= 19000:
-        field_number += 1000
+      field_number += 1000
+
+    if field_number > 536870911:
+      raise ValueError("Field number %i is out of range."%field_number)
 
     return field_number
-
 
 def to_proto_import(namespaced_type):
     assert isinstance(namespaced_type, rosidl.NamespacedType)
